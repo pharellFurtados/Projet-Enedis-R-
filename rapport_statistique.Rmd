@@ -1,0 +1,241 @@
+---
+title: "Analyse des DPE de la Ville de Lyon"
+author: "GreenTech Solutions - [Nassir - Pharell - Farès]"
+date: "`r format(Sys.Date(), '%d/%m/%Y')`"
+output: 
+  html_document:
+    theme: united
+    toc: true
+    toc_float: true
+    code_fold: hide
+params:
+  arrondissement:
+    label: "Choisir un arrondissement (laisser 'Tous' pour l'analyse globale):"
+    value: "Tous"
+    input: select
+    choices: ["Tous", "69001", "69002", "69003", "69004", "69005", "69006", "69007", "69008", "69009"]
+  type_logement:
+    label: "Type de logement:"
+    value: "Tous"
+    input: select
+    choices: ["Tous", "Ancien", "Neuf"]
+---
+
+```{r setup, include=FALSE, message=FALSE, warning=FALSE}
+# --- 1. Bibliothèques ---
+library(dplyr)
+library(readr)
+library(ggplot2)
+library(plotly)
+library(kableExtra)
+library(viridis) # Pour les palettes de couleurs professionnelles
+library(tidyr)   # Pour les KPIs
+
+# --- 2. Définition de la Palette "GreenTech" ---
+PALETTE_DPE <- viridis_pal(option = "viridis")(7) # 7 couleurs pour A-G
+COULEUR_PRINCIPALE <- "#21908CFF" # Teal (de la palette viridis)
+COULEUR_SECONDAIRE <- "#440154FF" # Violet (pour le contraste)
+COULEUR_ACCENT <- "#FDE725FF"   # Jaune (pour les lignes de tendance)
+
+# --- 3. Chargement et Filtres ---
+data_complet <- read_csv("../app/data/dpe_clean.csv")
+
+data_filtree <- data_complet
+if (params$arrondissement != "Tous") {
+  data_filtree <- data_filtree %>% filter(code_postal == params$arrondissement)
+}
+if (params$type_logement != "Tous") {
+  data_filtree <- data_filtree %>% filter(source_type == params$type_logement)
+}
+```
+
+## Introduction et Contexte
+
+Avec l'accélération du changement climatique et la hausse des prix de l'énergie, la **sobriété énergétique** est au cœur des préoccupations. C'est dans ce cadre qu'Enedis nous sollicite afin d'évaluer l'impact de la classe de **Diagnostic de Performance Energétique (DPE)** sur les consommations électriques des logements.
+
+Ce rapport analyse les données DPE de l'ADEME pour les 9 arrondissements de la ville de Lyon, afin d'identifier les caractéristiques des logements les plus énergivores et les leviers d'efficacité énergétique.
+
+### Aperçu des Données (Périmètre sélectionné)
+
+Les indicateurs clés pour le périmètre d'analyse (paramètres : `r params$arrondissement`, `r params$type_logement`) sont les suivants :
+
+```{r kpi_snapshot, echo=FALSE}
+data_filtree %>%
+  summarise(
+    `Nombre Total de Logements` = n(),
+    `Consommation Moyenne (kWh/m²)` = round(mean(consommation_kwh_m2, na.rm = TRUE), 1),
+    `Surface Moyenne (m²)` = round(mean(surface_m2, na.rm = TRUE), 1),
+    `Année Construction Moyenne` = round(mean(annee_construction, na.rm = TRUE))
+  ) %>%
+  tidyr::pivot_longer(everything(), names_to = "Indicateur", values_to = "Valeur") %>% 
+  kable(caption = "Indicateurs Clés des Données") %>%
+  kable_styling(bootstrap_options = c("striped", "condensed"), full_width = F, position = "float_left")
+```
+
+---
+
+## Problématique 1 : Cohérence de la consommation par classe DPE
+
+Cette analyse vérifie si la consommation (`consommation_kwh_m2`) augmente de manière cohérente avec l'étiquette DPE.
+
+```{r plot_conso_dpe, echo=FALSE}
+# 1. Créer le graphique
+p1 <- ggplot(data_filtree, aes(x = dpe_classe, y = consommation_kwh_m2, fill = dpe_classe)) +
+  geom_boxplot(show.legend = FALSE, outlier.shape = NA) +
+  coord_cartesian(ylim = c(0, quantile(data_filtree$consommation_kwh_m2, 0.95, na.rm = TRUE))) +
+  scale_fill_manual(values = PALETTE_DPE) +
+  labs(
+    title = "Distribution de la Consommation par Classe DPE",
+    subtitle = "Consommation en kWh/m²/an (95e percentile)",
+    x = "Classe DPE",
+    y = "Consommation (kWh/m²)"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(plot.title = element_text(face = "bold"))
+
+# 2. Rendre interactif
+ggplotly(p1)
+```
+
+**Interprétation :** Ce graphique valide la pertinence globale du système DPE. On observe que la **consommation médiane** (la ligne centrale de la boîte) **augmente logiquement** à mesure que la classe se dégrade, passant de très faible pour la classe A à significativement plus élevée pour la classe G.
+
+Cependant, le **chevauchement important** entre les "boîtes" (notamment entre les classes C, D et E) est très instructif. Il montre qu'il existe une forte variabilité de consommation au sein d'une même classe DPE. Cela suggère que si l'étiquette donne une tendance, la consommation réelle au m² est aussi fortement influencée par d'autres facteurs non visibles ici, tels que les habitudes des occupants ou le système de chauffage.
+
+---
+
+## Problématique 2 : Performance comparée des logements Neufs vs. Anciens
+
+Nous comparons la répartition des classes DPE entre les logements "Neuf" et "Ancien" pour quantifier l'impact des normes de construction récentes.
+
+```{r plot_neuf_ancien, echo=FALSE}
+# 1. Préparer les données
+data_counts <- data_filtree %>%
+  count(source_type, dpe_classe, name = "nombre_logements")
+
+# 2. Créer le graphique
+p2 <- ggplot(data_counts, 
+       aes(x = dpe_classe, 
+           y = nombre_logements, 
+           fill = source_type,
+           text = paste(source_type, "<br>Classe:", dpe_classe, "<br>Total:", nombre_logements))) +
+  geom_col(position = "dodge") + 
+  scale_fill_manual(values = c("Ancien" = COULEUR_PRINCIPALE, "Neuf" = COULEUR_SECONDAIRE)) +
+  labs(
+    title = "Répartition des DPE : Neuf vs Ancien",
+    subtitle = "Nombre de logements par catégorie",
+    x = "Classe DPE",
+    y = "Nombre de logements",
+    fill = "Type de logement"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(plot.title = element_text(face = "bold"), legend.position = "top")
+  
+# 2. Rendre interactif
+ggplotly(p2, tooltip = "text")
+```
+
+**Interprétation :** L'analyse de la répartition des classes DPE par type de logement est sans appel. Les logements **"Neuf" sont quasi-exclusivement classés A, B ou C**, ce qui démontre l'efficacité des normes de construction récentes (comme la RT2012) sur la performance énergétique.
+
+À l'inverse, les logements **"Ancien" constituent la vaste majorité des classes D, E, F et G**. Ce graphique met en évidence le cœur du défi de la rénovation énergétique à Lyon : le parc ancien est le principal détenteur des logements les plus énergivores ("passoires thermiques").
+
+---
+
+## Problématique 3 : Relation entre la surface et l'efficacité énergétique
+
+Nous explorons la corrélation entre la `surface_m2` d'un logement et son efficacité énergétique (`consommation_kwh_m2`).
+
+```{r plot_scatter_surface, echo=FALSE}
+# Filtrer les valeurs extrêmes pour une meilleure lisibilité
+data_filtree_limitee <- data_filtree %>%
+  filter(
+    surface_m2 < 300, 
+    consommation_kwh_m2 < 600
+  )
+
+# 1. Créer le graphique
+p3 <- ggplot(data_filtree_limitee, aes(x = surface_m2, y = consommation_kwh_m2)) +
+  geom_point(alpha = 0.2, size = 1.5, color = COULEUR_PRINCIPALE) +
+  geom_smooth(method = "lm", se = FALSE, color = COULEUR_ACCENT, linetype = "dashed") +
+  labs(
+    title = "Consommation (kWh/m²) en fonction de la Surface",
+    subtitle = "Tendance linéaire (pointillés) et densité des logements",
+    x = "Surface Habitable (m²)",
+    y = "Consommation (kWh/m²)"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(plot.title = element_text(face = "bold"))
+
+# 2. Rendre interactif
+ggplotly(p3)
+```
+
+**Interprétation :** Ce nuage de points montre une très faible corrélation entre la surface du logement et sa consommation normalisée au m². La ligne de tendance, quasiment plate, suggère que **l'efficacité énergétique au m² ne s'améliore ni ne se dégrade significativement avec la taille** du logement. La dispersion massive des points confirme que l'état du bâtiment (son DPE) et les habitudes des occupants sont des facteurs bien plus déterminants que la surface seule.
+
+---
+
+## Problématique 4 : Évolution de la performance énergétique par décennie
+
+Ce diagramme en barres empilées illustre la répartition proportionnelle des classes DPE pour les logements construits à différentes décennies. Il permet de visualiser l'impact des réglementations thermiques successives.
+
+```{r plot_stacked_annee, echo=FALSE}
+# 1. Préparer les données (identique à la heatmap)
+data_decennies <- data_filtree %>%
+  filter(annee_construction >= 1950 & annee_construction <= 2024) %>%
+  mutate(decennie = floor(annee_construction / 10) * 10) %>%
+  count(decennie, dpe_classe, name = "nombre_logements") %>%
+  # S'assurer que les facteurs sont dans le bon ordre
+  mutate(dpe_classe = factor(dpe_classe, levels = c("A", "B", "C", "D", "E", "F", "G")))
+
+# 2. Créer le graphique
+p4 <- ggplot(data_decennies, 
+       aes(x = as.factor(decennie), 
+           y = nombre_logements, 
+           fill = dpe_classe,
+           # Définir le "tooltip" pour ggplotly
+           text = paste("Décennie:", decennie, 
+                        "\nDPE:", dpe_classe, 
+                        "\nLogements:", nombre_logements)
+           )) +
+  
+  # "position = 'fill'" crée un graphique 100% empilé
+  geom_col(position = "fill", color = "white", lwd = 0.2) +
+  
+  # Utilisation de la palette DPE définie dans le setup
+  scale_fill_manual(values = PALETTE_DPE, name = "Classe DPE") +
+  
+  # Formate l'axe Y en pourcentages
+  scale_y_continuous(labels = scales::percent_format()) +
+  
+  labs(
+    title = "Évolution de la Répartition des DPE par Décennie",
+    subtitle = "Proportion de chaque classe DPE par décennie de construction",
+    x = "Décennie de Construction",
+    y = "Proportion des Logements"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(plot.title = element_text(face = "bold"),
+        legend.position = "bottom") # Légende en bas pour ce format
+
+# 2. Rendre interactif
+ggplotly(p4, tooltip = "text")
+
+```
+---
+**Interprétation :** Ce graphique illustre une **amélioration spectaculaire de la performance énergétique** au fil du temps.
+
+On voit clairement que les barres des décennies 1950 à 1980 sont dominées par les couleurs sombres (classes E, F, G), qui représentent la majorité des logements construits à cette époque.
+
+À partir des années 2000, et de manière encore plus marquée après 2010, les couleurs vives (jaune, vert clair pour les classes A, B, C) prennent le dessus. La quasi-disparition des classes F et G dans les constructions récentes démontre l'impact positif et direct des réglementations thermiques (RT) successives sur la qualité énergétique du parc neuf.
+
+## Conclusion Générale
+
+Cette analyse a permis de dresser un portrait précis de la performance énergétique du parc lyonnais :
+
+1.  **Le DPE est pertinent :** Nous avons confirmé que la classe DPE est un indicateur globalement fiable de la consommation médiane, bien qu'une forte variabilité existe au sein de chaque classe (Problématique 1).
+2.  **Le fossé Neuf/Ancien est réel :** L'écart de performance entre le parc neuf (majoritairement A-C) et le parc ancien (majoritairement D-G) est massif (Problématique 2).
+3.  **L'impact des normes est visible :** L'analyse par décennie montre une amélioration spectaculaire de la performance des constructions post-2000, validant l'efficacité des réglementations thermiques (Problématique 4).
+
+Pour Enedis, ces résultats suggèrent que les efforts de sobriété énergétique et les actions d'accompagnement doivent se concentrer massivement sur la **rénovation du parc ancien**, qui constitue le principal gisement d'économies d'énergie.
+
+### Limites de l'analyse
+Il est important de noter que les données DPE fournissent une consommation **théorique** (calculée) et non la consommation **réelle** (facturée), qui dépend fortement des habitudes des occupants.

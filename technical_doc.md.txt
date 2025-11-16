@@ -1,0 +1,80 @@
+# Documentation Technique - Projet Enedis DPE
+
+**Version :** 1.0
+**Date :** 15/11/2025
+**Auteur :** [Nassir - Pharell - Farès]
+
+---
+
+## 1. Architecture du Projet
+
+Ce projet est structuré en quatre dossiers distincts pour séparer les logiques de préparation, d'analyse et d'application.
+
+/iut-sd2-enedis/ │ ├── app/ │ ├── data/ │ │ └── dpe_clean.csv (Données finales pour l'app) │ ├── www/ │ │ └── custom_style.css (Charte CSS "Expert") │ └── app.R (Code de l'application Shiny) │ ├── data_preparation/ │ ├── dpe-v2-logements-neufs.csv (Données brutes, à ajouter) │ ├── dpe-v2-logements-existants.csv (Données brutes, à ajouter) │ └── extraction_api.R (Script de nettoyage et filtrage) │ ├── docs/ │ ├── technical_doc.md (Ce fichier) │ └── functional_doc.md (Documentation utilisateur) │ └── rapport/ └── rapport_statistique.Rmd (Analyse statistique)
+
+
+### Schéma de l'Architecture (Draw.io)
+
+Le flux de données suit une logique en cascade :
+
+1.  **Préparation :** Le script `extraction_api.R` lit les CSV bruts dans `data_preparation/`.
+2.  **Nettoyage :** Il filtre les données (pour Lyon), les nettoie, et les standardise.
+3.  **Stockage :** Il sauvegarde le fichier `dpe_clean.csv` final dans `app/data/`.
+4.  **Consommation :** L'application `app/app.R` et le rapport `rapport/rapport_statistique.Rmd` lisent **tous les deux** ce fichier `dpe_clean.csv` propre.
+
+*(Note : Un schéma visuel créé sur Draw.io et exporté en `.png` devrait être inséré ici pour illustrer ce flux)*
+
+---
+
+## 2. Packages et Prérequis
+
+Ce projet a été développé avec **R version 4.x**. L'installation des packages suivants est requise pour une exécution complète.
+
+### Packages Communs (Analyse et Préparation)
+* `dplyr` : Manipulation de données.
+* `readr` : Lecture/écriture des fichiers CSV.
+* `janitor` : Nettoyage des noms de colonnes.
+* `rlang` : Requis pour la programmation `dplyr`.
+* `ggplot2` : Création des graphiques statiques.
+* `viridis` : Palettes de couleurs.
+* `tidyr` : Rangement des données (KPIs).
+
+### Packages RMarkdown (Rapport)
+* `plotly` : Graphiques interactifs.
+* `kableExtra` : Mise en forme des tableaux.
+
+### Packages RShiny (Application)
+* `shiny` : Framework de l'application.
+* `shinythemes` : Thèmes pour l'interface.
+* `leaflet` : Cartographie interactive.
+* `shinymanager` : Module de connexion (login).
+* `DT` : Tableaux de données interactifs.
+
+Vous pouvez installer tous les packages nécessaires avec la commande suivante dans la console R :
+
+```R
+install.packages(c(
+  "dplyr", "readr", "janitor", "rlang", "ggplot2", "viridis", "tidyr",
+  "plotly", "kableExtra", 
+  "shiny", "shinythemes", "leaflet", "shinymanager", "DT"
+))
+3. Installation et Lancement
+Suivez ces étapes pour lancer l'application en local.
+
+Étape 1 : Préparer les données brutes
+Avant de lancer le script de préparation, vous devez manuellement télécharger les fichiers dpe-v2-logements-neufs.csv et dpe-v2-logements-existants.csv (depuis data.gouv ou ADEME) et les placer à la racine du dossier data_preparation/.
+
+Étape 2 : Exécuter le script de préparation
+Ouvrez RStudio et exécutez l'intégralité du script : data_preparation/extraction_api.R
+
+Ce script va générer le fichier app/data/dpe_clean.csv. Vous n'avez besoin de l'exécuter qu'une seule fois.
+
+Étape 3 : Lancer l'application Shiny
+Ouvrez le script : app/app.R
+
+Cliquez sur le bouton "Run App" en haut à droite de l'éditeur RStudio. L'application se lancera dans une nouvelle fenêtre ou dans votre navigateur.
+
+(Optionnel) Générer le rapport
+Ouvrez le fichier : rapport/rapport_statistique.Rmd
+
+Cliquez sur le bouton "Knit" en haut de l'éditeur RStudio pour générer le rapport HTML.

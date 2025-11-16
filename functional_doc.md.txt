@@ -1,0 +1,61 @@
+# Documentation Fonctionnelle - Dashboard DPE Lyon
+
+**Version :** 1.0
+**Date :** 15/11/2025
+**Destinataire :** Client (Enedis) / Utilisateurs finaux
+
+---
+
+## 1. Objectif de l'Application
+
+Cette application a été développée pour permettre à Enedis d'**évaluer l'impact de la classe DPE sur la consommation énergétique** des logements de la ville de Lyon.
+
+Elle permet d'explorer, de filtrer et de visualiser les données des DPE pour les logements neufs et anciens, afin d'identifier les tendances et les caractéristiques du parc immobilier.
+
+## 2. Accès à l'Application
+
+[cite_start]Pour des raisons de sécurité, l'accès au tableau de bord est protégé par un nom d'utilisateur et un mot de passe.
+
+* **Utilisateur :** `enedis`
+* **Mot de passe :** `enedis`
+
+## 3. Description des Pages (Onglets)
+
+L'application est divisée en quatre onglets principaux pour une navigation intuitive.
+
+### Onglet 1 : Tableau de bord
+C'est la page d'accueil. Elle vous permet de :
+* **Filtrer l'ensemble des données** vues dans l'application selon :
+    * Le type de logement (Ancien, Neuf, ou Tous).
+    * La classe DPE (A, B, C...).
+    * La surface du logement.
+* Consulter les **Indicateurs Clés (KPIs)** qui se mettent à jour automatiquement.
+* Voir un **aperçu des données** filtrées.
+* **Exporter les données** filtrées au format `.csv`.
+
+### Onglet 2 : Graphiques
+Cet onglet présente des visualisations clés pour comprendre la structure du parc immobilier. Il contient :
+* Un **histogramme** pour voir la distribution des consommations.
+* Une **boîte à moustaches** pour analyser la répartition des surfaces par classe DPE.
+* Un **diagramme en barres** pour voir le nombre de logements dans chaque classe DPE.
+* Un bouton pour **exporter les graphiques au format `.png`**.
+
+### Onglet 3 : Analyse & Régression
+Cet onglet permet une analyse plus poussée pour les utilisateurs avancés.
+* Il vous permet de **choisir deux variables** (ex: Surface et Consommation).
+* Il affiche le **nuage de points** entre ces deux variables.
+* Il calcule automatiquement le **coefficient de corrélation** et dessine la **droite de régression linéaire** pour montrer la tendance.
+
+### Onglet 4 : Cartographie
+Cet onglet permet de visualiser géographiquement les logements.
+* Il affiche une **carte interactive** de Lyon.
+* Les logements sont regroupés (clusters) pour plus de lisibilité.
+* Vous pouvez **cliquer sur un point** pour voir les détails de son DPE.
+
+---
+
+## 4. Fonctionnalités Clés
+
+* **Filtres dynamiques :** Tous les filtres appliqués dans le "Tableau de bord" impactent les données de *tous* les onglets (Graphiques, Régression, Carte).
+***Connexion sécurisée :** L'application est protégée par un mot de passe.
+* **Exports faciles :** Exporter les données brutes en `.csv` ou les graphiques en `.png` se fait en un clic.
