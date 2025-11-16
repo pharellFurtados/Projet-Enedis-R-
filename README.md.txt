@@ -11,7 +11,7 @@ Ce projet a été réalisé dans le cadre du cours SD2. Il vise à évaluer l'im
 ## Liens Rapides
 
 * **Lien vers l'application déployée :** `[COLLEZ VOTRE LIEN SHINYAPPS.IO ICI]`
-* **Lien vers la vidéo de démonstration :** `[COLLEZ VOTRE LIEN YOUTUBE PRIVÉ ICI]`
+* **Lien vers la vidéo de démonstration :** https://youtu.be/ces1Ex9wU_E?si=eH_qIaxOOrn8zc2k
 
 ---
 
@@ -48,3 +48,4 @@ Pour lancer ce projet sur votre machine, suivez ces étapes :
     * Cliquez sur **"Run App"**.
 
     * Utilisez les identifiants : `élève` / `projet`.
+
