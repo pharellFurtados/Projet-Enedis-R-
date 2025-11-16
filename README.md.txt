@@ -1,7 +1,7 @@
 # Projet RShiny - Analyse DPE pour Enedis
 
 **Client :** Enedis
-**Auteur :** [Nassir - Farès - Phare]
+**Auteur :** [Nassir - Farès - Pharell]
 **Date :** 15/11/2025
 
 Ce projet a été réalisé dans le cadre du cours SD2. Il vise à évaluer l'impact de la classe de Diagnostic de Performance Energétique (DPE) sur les consommations électriques, en se basant sur les données des logements de Lyon.
@@ -46,4 +46,5 @@ Pour lancer ce projet sur votre machine, suivez ces étapes :
 3.  **Lancer l'application :**
     * Ouvrez le fichier `app/app.R` dans RStudio.
     * Cliquez sur **"Run App"**.
-    * Utilisez les identifiants : `enedis` / `enedis`.
+
+    * Utilisez les identifiants : `élève` / `projet`.
