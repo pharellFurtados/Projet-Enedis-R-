@@ -4,8 +4,8 @@
 **Auteur :** [Nassir - Farès - Pharell]
 **Date :** 15/11/2025
 
-Ce projet a été réalisé dans le cadre du cours SD2. Il vise à évaluer l'impact de la classe de Diagnostic de Performance Energétique (DPE) sur les consommations électriques, en se basant sur les données des logements de Lyon.
-
+Ce projet vise à analyser l’impact de la classe de Diagnostic de Performance Énergétique (DPE) sur les consommations électriques des logements du département du Rhône (69), en particulier sur la ville de Lyon.
+L’application RShiny développée permet à Enedis d’explorer dynamiquement les données du parc immobilier local, dans une logique de sobriété énergétique et d’optimisation des usages. Réalisé en 2ème année de BUT SD à l'IUT Lumière Lyon 2
 ---
 
 ## Liens Rapides
@@ -48,5 +48,6 @@ Pour lancer ce projet sur votre machine, suivez ces étapes :
     * Cliquez sur **"Run App"**.
 
     * Utilisez les identifiants : `élève` / `projet`.
+
 
 
