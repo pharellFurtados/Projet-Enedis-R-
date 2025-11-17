@@ -15,7 +15,7 @@ logique de sobriété énergétique et d’optimisation des usages. Réalisé en
 
 ## Liens Rapides
 
-* **Lien vers l'application déployée :** `[COLLEZ VOTRE LIEN SHINYAPPS.IO ICI]`
+* **Lien vers l'application déployée :** https://faresredissi.shinyapps.io/projet_dpe/
 * **Lien vers la vidéo de démonstration :** https://youtu.be/ces1Ex9wU_E?si=eH_qIaxOOrn8zc2k
 
 ---
@@ -55,6 +55,7 @@ ainsi que tous les packages listés dans la `docs/technical_doc.md`.
     * Cliquez sur **"Run App"**.
 
     * Utilisez les identifiants : `élève` / `projet`.
+
 
 
 
