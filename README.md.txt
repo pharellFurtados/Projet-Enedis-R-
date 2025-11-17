@@ -54,7 +54,8 @@ ainsi que tous les packages listés dans la `docs/technical_doc.md`.
     * Ouvrez le fichier `app/app.R` dans RStudio.
     * Cliquez sur **"Run App"**.
 
-    * Utilisez les identifiants : `élève` / `projet`.
+    * Utilisez les identifiants : `eleve` / `projet`.
+
 
 
 
