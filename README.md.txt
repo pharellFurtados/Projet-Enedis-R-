@@ -22,7 +22,8 @@ logique de sobriété énergétique et d’optimisation des usages. Réalisé en
 
 ## 1. Contexte du Projet
 
-Avec l'accélération du changement climatique et la hausse des prix de l'énergie, la sobriété énergétique est un enjeu majeur[cite: 17]. Ce tableau de bord interactif a été commandé par Enedis pour analyser la performance du parc immobilier lyonnais.
+Avec l'accélération du changement climatique et la hausse des prix de l'énergie, la sobriété énergétique est un enjeu majeur[cite: 17]. 
+Ce tableau de bord interactif a été commandé par Enedis pour analyser la performance du parc immobilier lyonnais.
 
 ## 2. Fonctionnalités de l'Application
 
@@ -44,7 +45,8 @@ Exports :** Téléchargement des données filtrées en `.csv` et des graphiques 
 
 Pour lancer ce projet sur votre machine, suivez ces étapes :
 
-1.  **Prérequis :** Assurez-vous d'avoir R et RStudio installés, ainsi que tous les packages listés dans la `docs/technical_doc.md`.
+1.  **Prérequis :** Assurez-vous d'avoir R et RStudio installés,
+ainsi que tous les packages listés dans la `docs/technical_doc.md`.
 2.  **Préparer les données :**
     * Placez les CSV bruts de l'ADEME dans le dossier `data_preparation/`.
     * Exécutez le script `data_preparation/extraction_api.R` **une seule fois**.
@@ -53,6 +55,7 @@ Pour lancer ce projet sur votre machine, suivez ces étapes :
     * Cliquez sur **"Run App"**.
 
     * Utilisez les identifiants : `élève` / `projet`.
+
 
 
 
