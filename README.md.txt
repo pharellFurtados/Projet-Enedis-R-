@@ -17,18 +17,18 @@ Ce projet a été réalisé dans le cadre du cours SD2. Il vise à évaluer l'im
 
 ## 1. Contexte du Projet
 
-[cite_start]Avec l'accélération du changement climatique et la hausse des prix de l'énergie, la sobriété énergétique est un enjeu majeur[cite: 17]. [cite_start]Ce tableau de bord interactif a été commandé par Enedis pour analyser la performance du parc immobilier lyonnais[cite: 18].
+Avec l'accélération du changement climatique et la hausse des prix de l'énergie, la sobriété énergétique est un enjeu majeur[cite: 17]. Ce tableau de bord interactif a été commandé par Enedis pour analyser la performance du parc immobilier lyonnais.
 
 ## 2. Fonctionnalités de l'Application
 
 L'application Shiny (disponible dans le dossier `/app`) fournit une analyse interactive complète :
 
-* [cite_start]**Connexion Sécurisée :** Accès protégé par mot de passe (Fonctionnalité "Expert").
-* [cite_start]**Tableau de Bord :** KPIs et filtres dynamiques (Standard).
-* [cite_start]**Analyses Graphiques :** 4 types de graphiques (Histogramme, Boxplot, Barres, Nuage de points).
-* [cite_start]**Analyse de Régression :** Corrélation et régression linéaire entre deux variables (Intermédiaire).
-* [cite_start]**Cartographie :** Carte `leaflet` interactive des logements (Standard).
-* [cite_start]**Exports :** Téléchargement des données filtrées en `.csv` et des graphiques en `.png` (Intermédiaire).
+Connexion Sécurisée :** Accès protégé par mot de passe (Fonctionnalité "Expert").
+Tableau de Bord :** KPIs et filtres dynamiques (Standard).
+Analyses Graphiques :** 4 types de graphiques (Histogramme, Boxplot, Barres, Nuage de points).
+Analyse de Régression :** Corrélation et régression linéaire entre deux variables (Intermédiaire).
+Cartographie :** Carte `leaflet` interactive des logements (Standard).
+Exports :** Téléchargement des données filtrées en `.csv` et des graphiques en `.png` (Intermédiaire).
 
 ## 3. Structure du Dépôt
 
@@ -48,4 +48,5 @@ Pour lancer ce projet sur votre machine, suivez ces étapes :
     * Cliquez sur **"Run App"**.
 
     * Utilisez les identifiants : `élève` / `projet`.
+
 
